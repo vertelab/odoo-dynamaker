@@ -16,7 +16,7 @@ Adds A variant type to Product Template that:
     * Can compute a price due to dynamic changes
     
     """,
-    'depends': ['product''],
+    'depends': ['product'],
     'data': [
         'views/product_views.xml',
         

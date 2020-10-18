@@ -16,10 +16,10 @@ Adds A variant type to Product Template that:
     * Can compute a price due to dynamic changes
     
     """,
-    'depends': ['product''],
+    'depends': ['product'],
     'data': [
+        'security/ir.model.access.csv',
         'views/product_views.xml',
-        
     ],
     'website': 'https://www.vertel.se/module/product_dynamic_variant',
 }
