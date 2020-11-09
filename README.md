@@ -5,6 +5,7 @@ Dynamaker plugin
 * install modules:
     * sale_management
     * website_sale (eCommerce)
+    * product_configurator_dynamaker
 
 * copy-and-paste to browser:
     * product_configurator_dynamaker/views/lukas_view.xml
