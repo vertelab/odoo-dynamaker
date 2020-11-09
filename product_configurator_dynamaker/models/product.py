@@ -1,7 +1,19 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
+import logging
+import re
+
 from odoo import api, fields, models, tools, _
+from odoo.exceptions import ValidationError
+from odoo.osv import expression
+from odoo.tools import float_compare
+
+_logger = logging.getLogger(__name__)
+
+class ProductTemplate(models.Model):
+    _inherit = "product.template"
+    dynamaker_url = fields.Char(string='Dynamaker url', size=64, trim=True, )
 
 import json
 import werkzeug
@@ -18,13 +30,6 @@ from odoo.osv import expression
 from odoo.tools import html2plaintext
 from odoo.tools.misc import get_lang
 
-import logging
-_logger = logging.getLogger(__name__)
-
-class ProductTemplate(models.Model):
-    _inherit = "product.template"
-    dynamaker_url = fields.Char(string='Dynamaker url', size=64, trim=True)
-
 class WebsiteProductConfiguratorDynamaker(http.Controller):
     @http.route(['/product_configurator/dynamaker_price'], type='json', auth='public', website=True)
     def product_configurator_dynamaker_price(self, **kw):
@@ -38,11 +43,11 @@ class WebsiteProductConfiguratorDynamaker(http.Controller):
         _logger.warn("~ thickness: %s " % thickness)
         _logger.warn("~ edge: %s " % edgeType)
 
-        price = self.calcProductPrice(width, length, thickness, edgeType)
+        price = self.getProductPrice(width, length, thickness, edgeType)
         
         return request.website.viewref('product.product_template_form_view').render({'price': price})
 
-    def calcProductPrice(self, x, y, z, edgeType):
+    def getProductPrice(self, x, y, z, edgeType):
         edgeTypeCost = 0
         
         if edgeType == "polished":
