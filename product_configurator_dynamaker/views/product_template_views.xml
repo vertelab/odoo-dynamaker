@@ -14,7 +14,7 @@
                 <field name="company_id" options="{'no_create_edit': True}"
                     groups="base.group_multi_company" optional="hide"/>
                 <field name="list_price" string="Sales Price" optional="show"/>
-                <field name="standard_price" optional="show" readonly="1"/>
+                <field name="standard_price" optional="show" readonly="1"/> 
                 <field name="categ_id" optional="hide"/>
                 <field name="type" optional="hide" readonly="1"/>
                 <field name="uom_id" readonly="1" optional="show" groups="uom.group_uom"/>

@@ -9,7 +9,7 @@ _logger = logging.getLogger(__name__)
 class ProductTemplate(models.Model):
     _inherit = "product.template"
     dynamaker_url = fields.Char(string='Dynamaker url', size=64, trim=True, )
-    
+
 import json
 import werkzeug
 import itertools
