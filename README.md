@@ -1,7 +1,7 @@
 # odoo-dynamaker
 Dynamaker plugin
 
-## how to setup dynamaker
+## how to setup dynamaker skateboard
 * install modules:
     * sale_management
     * website_sale (eCommerce)
