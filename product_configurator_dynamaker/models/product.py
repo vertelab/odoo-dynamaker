@@ -49,4 +49,4 @@ class WebsiteProductConfiguratorDynamaker(http.Controller):
             edgeTypeCost = 15
             
         # price = 0.5$ per cm³ + edgeType
-        return x*y*z/50 + edgeTypeCost;
+        return round(x*y*z/900000) + edgeTypeCost;
