@@ -2,6 +2,10 @@
 Dynamaker plugin
 
 ## how to setup dynamaker skateboard
+* run odoogitclone [project]
+
+* go to debug mode -> update module list
+
 * install modules:
     * sale_management
     * website_sale (eCommerce)
