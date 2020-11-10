@@ -2,7 +2,7 @@
 Dynamaker plugin
 
 ## how to setup dynamaker skateboard
-* run odoogitclone [project]
+* run odoogitclone odoo-dynamaker
 
 * go to debug mode -> update module list
 
