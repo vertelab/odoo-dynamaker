@@ -30,16 +30,5 @@ odoo.define("dynamaker_integration_experiment.dynamaker_price_integration", func
 })
 
 /*
- * replaced
- * <t t-call="website_sale.shop_product_carousel"/>
- * with
- * <iframe src='https://deployed.dynamaker.com/applications/kvOWnEY7tMC' id='dynamaker-configurator' width="1000" height="700"></iframe>
- * 
- * 
- * install modules: 'sale_management', 'website_sale (eCommerce)'
- * 
- * "If you edit and save this file, you will never receive updates from Odoo anymore unless you reset your customizations. "
- * 
  * parametersFromDynaMaker = Object { width: 1000, length: 1280, thickness: 10, edgeType: "standard" }
- *
- * */
+ */

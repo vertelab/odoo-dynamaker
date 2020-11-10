@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-
         <record model="ir.ui.view" id="product_pricelist_item_view_search">
             <field name="name">product.pricelist.item.search</field>
             <field name="model">product.pricelist.item</field>

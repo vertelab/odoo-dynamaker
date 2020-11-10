@@ -2,29 +2,16 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 {
-    'name': 'Products & Pricelists',
+    'name': 'Dynamaker',
     'version': '1.2',
     'category': 'Sales/Sales',
     'depends': ['product', 'website'],
     'description': """
-This is the base module for managing products and pricelists in Odoo.
+Dynamaker: Parametric Product Customization
 ========================================================================
 
-Products support variants, different pricing methods, vendors information,
-make to stock/order, different units of measure, packaging and properties.
+Build and Publish Your Own Online Visual CAD Configurators that automatically can generate 3D-files, BOM-lists, 2D drawings and manufacturing data for every quotation and order.
 
-Pricelists support:
--------------------
-    * Multiple-level of discount (by product, category, quantities)
-    * Compute price based on different criteria:
-        * Other pricelist
-        * Cost price
-        * List price
-        * Vendor price
-
-Pricelists preferences by product and/or partners.
-
-Print product labels with barcode.
     """,
     'data': [
         'views/product_views.xml',
