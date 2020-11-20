@@ -1,13 +1,10 @@
-<!--
 <?xml version="1.0"?>
 <odoo>
     <data>
--->
         <t name="Product" track="1" t-name="website_sale.product">
             <t t-set="combination" t-value="product._get_first_possible_combination()"/>
             <t t-set="combination_info" t-value="product._get_combination_info(combination, add_qty=add_qty or 1, pricelist=pricelist)"/>
             <t t-set="product_variant" t-value="product.env['product.product'].browse(combination_info['product_id'])"/>
-
             <t t-call="website.layout">
                 <t t-set="additional_title" t-value="product.name"/>
                 <div itemscope="itemscope" itemtype="http://schema.org/Product" id="wrap" class="js_sale">
@@ -29,46 +26,45 @@
                             <div class="col-md-8">
                                 <div class="form-inline justify-content-end">
                                     <t t-call="website_sale.search">
-                                        <t t-set="search" t-value="False"/>
-                                    </t>
+                                        <t t-set="search" t-value="False"/></t>
                                     <t t-call="website_sale.pricelist_list">
                                         <t t-set="_classes">ml-2</t>
                                     </t>
                                 </div>
                             </div>
                         </div>
-                        
-                            <div class="col-md-6 col-xl-8">
-                                <iframe t-att-src="product.dynamaker_url" id='dynamaker-configurator' width="1070" height="700"></iframe>
-                            </div>
-                            <div class="row">
+                        <div class="col-md-6 col-xl-8">
+                            <!-- https://deployed.dynamaker.com/applications/kvOWnEY7tMC -->
+                            <iframe t-att-src="product.dynamaker_url" id='dynamaker-configurator' width="1070" height="700"></iframe>
+                        </div>
+                        <div class="row">
                             <div class="col-md-6 col-xl-7" id="product_details">
                                 <h1 itemprop="name" t-field="product.name">Product Name</h1>
                                 <span itemprop="url" style="display:none;" t-esc="product.website_url"/>
+                                
                                 <form t-if="product._is_add_to_cart_possible()" action="/shop/cart/update" method="POST">
                                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                                    <div class="js_product js_main_product" style="display:none;">
+                                    <div class="js_product js_main_product">
                                         <t t-placeholder="select">
                                             <input type="hidden" class="product_id" name="product_id" t-att-value="product_variant.id"/>
                                             <input type="hidden" class="product_template_id" name="product_template_id" t-att-value="product.id"/>
+                                            <!-- <input class="product_id" name="product_custom_attribute_values" t-att-value="request.session.get('form_values')"/> -->
+                                            <!-- <input class="product_id" name="product_custom_attribute_values" t-att-value='request.session.get("form_values")'/> -->
                                             <t t-if="combination" t-call="sale.variants">
                                                 <t t-set="ul_class" t-value="'flex-column'"/>
-                                                <t t-set="parent_combination" t-value="None"/>
-                                            </t>
+                                                <t t-set="parent_combination" t-value="None"/></t>
                                             <t t-else="">
                                                 <ul class="d-none js_add_cart_variants" t-att-data-attribute_exclusions="{'exclusions: []'}"/>
                                             </t>
                                         </t>
-            
                                         <p t-if="True" class="css_not_available_msg alert alert-warning">This combination does not exist.</p>
                                         <t t-call="website_sale.product_price"/>
-                                        <a role="button" id="add_to_cart" class="btn btn-primary btn-lg mt16 js_check_product a-submit d-block d-sm-inline-block" href="#"><i class="fa fa-shopping-cart"/> Add to Cart</a>
-                                        <div id="product_option_block"/>
-                                    </div>
-                                    
-                                    <t t-call="website_sale.product_price"/>
-                                    <a role="button" id="add_to_cart" class="btn btn-primary btn-lg mt16 js_check_product a-submit d-block d-sm-inline-block" href="#"><i class="fa fa-shopping-cart"/> Add to Cart</a>
+                                        <a role="button" id="add_to_cart" class="btn btn-primary btn-lg mt16 js_check_product a-submit d-block d-sm-inline-block" href="#">
+                                            <i class="fa fa-shopping-cart"/> Add to Cart
+                                        </a>
+                                        <div id="product_option_block"/></div>
                                 </form>
+                                
                                 <p t-elif="not product.active" class="alert alert-warning">This product is no longer available.</p>
                                 <p t-else="" class="alert alert-warning">This product has no valid combination.</p>
                                 <hr t-if="product.description_sale"/>
@@ -80,8 +76,10 @@
                                             <t t-set="single_value_attributes" t-value="product.valid_product_template_attribute_line_ids._prepare_single_value_for_display()"/>
                                             <t t-foreach="single_value_attributes" t-as="attribute">
                                                 <span t-field="attribute.name"/>:
+                                                
                                                 <t t-foreach="single_value_attributes[attribute]" t-as="ptal">
-                                                    <span t-field="ptal.product_template_value_ids._only_active().name"/><t t-if="not ptal_last">, </t>
+                                                    <span t-field="ptal.product_template_value_ids._only_active().name"/>
+                                                    <t t-if="not ptal_last">, </t>
                                                 </t>
                                                 <br/>
                                             </t>
@@ -90,24 +88,23 @@
                                 </div>
                                 <hr/>
                                 <p class="text-muted">
-                                  30-day money-back guarantee<br/>
-                                  Free Shipping in U.S.<br/>
+                                  30-day money-back guarantee
+                                    <br/>
+                                  Free Shipping in U.S.
+                                    <br/>
                                   Buy now, get in 2 days
+                                
                                 </p>
                             </div>
                         </div>
                     </section>
-                    <div itemprop="description" t-field="product.website_description" class="oe_structure mt16" id="product_full_description"/>
-                </div>
+                    <div itemprop="description" t-field="product.website_description" class="oe_structure mt16" id="product_full_description"/></div>
             </t>
         </t>
-        
         <template id="assets_frontend" inherit_id="website.assets_frontend" name="Assets Frontend Cavarosa">
             <xpath expr="." position="inside">
-              <script src="/website_product_snippet/static/src/js/dynamaker.js" type="text/javascript"/>
+                <script src="/website_product_snippet/static/src/js/dynamaker.js" type="text/javascript"/>
             </xpath>
         </template>
-<!--
     </data>
 </odoo>   
--->
