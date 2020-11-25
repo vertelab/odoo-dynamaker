@@ -44,6 +44,10 @@ class WebsiteProductConfiguratorDynamaker(http.Controller):
         # calculate price
         price = product._compute_price(**kw)
         
+        # TODO: we need the product to be connected to each custom_product_template_attribute_value_id
+        # instead of request.session['form_values'] = {'width': 1000, 'length': 1320, 'thickness': 10, 'edgeType': 'standard'}
+        # we need request.session['form_values'] = [{attributeID: id, value : val}, {}, ..., {}]
+        # we need to create a product.template.attribute.value for each attribute.
         if 'form_values' not in request.session:
             request.session['form_values'] = dict()
         
