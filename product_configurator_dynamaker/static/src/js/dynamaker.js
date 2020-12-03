@@ -9,22 +9,30 @@ odoo.define("dynamaker_integration_experiment.dynamaker_price_integration", func
 
     // Define listener for DynaMaker Events
     window.addEventListener('message', (event)=>{
-          // Action for DynaMaker on event
-          if (event.origin === 'https://deployed.dynamaker.com') {
+        // Action for DynaMaker on event
+        if (event.origin === 'https://deployed.dynamaker.com') {
             try {
-              const parametersFromDynaMaker = event.data    // Structured data coming from DynaMaker
+                const parametersFromDynaMaker = event.data    // Structured data coming from DynaMaker
               
-              ajax.jsonRpc('/product_configurator/dynamaker_price', 'call', parametersFromDynaMaker).then(function(data) {
-                if (data.error) {
-                  console.error(data.error)
-                } else {
-                   $('span.oe_currency_value').text(data.price)
+                for (var key in parametersFromDynaMaker) {
+                    if (parametersFromDynaMaker.hasOwnProperty(key)) {           
+                        console.log("got input values: ", key, parametersFromDynaMaker[key]);
+                        document.querySelector("input[data-attribute_value_name='" + key + "']").value = parametersFromDynaMaker[key]
+                        console.log("wrote:", document.querySelector("input[data-attribute_value_name='" + key + "']").value, " to ", key, " field")
+                    }
                 }
-              })
-          } catch (err) {
-            console.warn('Invalid JSON data from DynaMaker')
-          }
-
+            
+                ajax.jsonRpc('/product_configurator/dynamaker_price', 'call', parametersFromDynaMaker).then(function(data) {
+                    if (data.error) {
+                        console.error(data.error)
+                    } else {
+                        // show server-side calculated price
+                        $('span.oe_currency_value').text(data.price)
+                    }
+                })
+            } catch (err) {
+                console.warn('Invalid JSON data from DynaMaker')
+            }
         }
     })
 })

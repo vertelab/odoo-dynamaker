@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="inherit_variants" inherit_id="sale.variants">
+        <xpath
+            expr=""
+            position="after">
+            
+        </xpath>
+            <t t-if="ptal.attribute_id.display_type == 'hidden_text'">
+                <ul t-att-data-attribute_id="ptal.attribute_id.id" t-attf-class="list-unstyled #{'d-none' if single_and_custom else ''}">
+                    <t t-foreach="ptal.product_template_value_ids._only_active()" t-as="ptav">
+                        <li class="form-group js_attribute_value" style="margin: 0;">
+                            <label class="col-form-label">
+                                <div>
+                                    <input type="text" />
+                                </div>
+                            </label>
+                        </li>
+                    </t>
+                </ul>
+            </t>
+    </template>
+</odoo>

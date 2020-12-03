@@ -8,7 +8,12 @@ from odoo.tools.safe_eval import safe_eval
 import logging
 _logger = logging.getLogger(__name__)
 
-class ProductTemplate(models.Model):
+class DynamakerProductAttribute(models.Model):
+    _inherit = "product.attribute"
+
+    display_type = fields.Selection(selection_add=[('hidden_text', 'Hidden Text')])
+
+class DynamakerProductTemplate(models.Model):
     _inherit = "product.template"
     
     DEFAULT_PYTHON_CODE = """# Specify the python price algorithm.
@@ -43,16 +48,6 @@ class WebsiteProductConfiguratorDynamaker(http.Controller):
         
         # calculate price
         price = product._compute_price(**kw)
-        
-        # TODO: we need the product to be connected to each custom_product_template_attribute_value_id
-        # instead of request.session['form_values'] = {'width': 1000, 'length': 1320, 'thickness': 10, 'edgeType': 'standard'}
-        # we need request.session['form_values'] = [{attributeID: id, value : val}, {}, ..., {}]
-        # we need to create a product.template.attribute.value for each attribute.
-        if 'form_values' not in request.session:
-            request.session['form_values'] = dict()
-        
-        # store kw in session
-        request.session['form_values'] = json.dumps(kw)
         
         return {'price': price}
 
