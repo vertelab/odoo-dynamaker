@@ -23,6 +23,8 @@ class DynamakerProductTemplate(models.Model):
     
     python_code = fields.Text('Price Algorithm', default=DEFAULT_PYTHON_CODE,
                         help="Write a Python algorithm that returns the price of the product.")
+
+    dynamaker_product = fields.Boolean(string='Dynamaker Product', default=False)
     
     dynamaker_url = fields.Char(string='Dynamaker url', size=64, trim=True)
 
