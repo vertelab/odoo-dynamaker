@@ -15,6 +15,7 @@ Build and Publish Your Own Online Visual CAD Configurators that automatically ca
     """,
     'data': [
         'views/product_views.xml',
+        'views/lukas_variant_templates.xml'
     ],
     'installable': True,
     'auto_install': False,

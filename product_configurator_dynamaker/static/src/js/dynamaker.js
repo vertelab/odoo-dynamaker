@@ -16,9 +16,9 @@ odoo.define("dynamaker_integration_experiment.dynamaker_price_integration", func
               
                 for (var key in parametersFromDynaMaker) {
                     if (parametersFromDynaMaker.hasOwnProperty(key)) {           
-                        console.log("got input values: ", key, parametersFromDynaMaker[key]);
+                        //console.log("got input values: ", key, parametersFromDynaMaker[key]);
                         document.querySelector("input[data-attribute_value_name='" + key + "']").value = parametersFromDynaMaker[key]
-                        console.log("wrote:", document.querySelector("input[data-attribute_value_name='" + key + "']").value, " to ", key, " field")
+                        //console.log("wrote ", document.querySelector("input[data-attribute_value_name='" + key + "']").value, " to field ", key)
                     }
                 }
             

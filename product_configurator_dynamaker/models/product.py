@@ -40,11 +40,13 @@ class WebsiteProductConfiguratorDynamaker(http.Controller):
     # Handles price update as product parameters are modified
     @http.route(['/product_configurator/dynamaker_price'], type='json', auth='public', website=True)
     def product_configurator_dynamaker_price(self, **kw):
-        # TODO: get id of product through kw. Below is temporary id for Customizable Desk (CONFIG).
+        # TODO: get id of product through kw? Below is temporary id for Customizable Desk (CONFIG).
         PRODUCT_ID = 9
         
         # get product
         product = request.env['product.template'].browse(PRODUCT_ID)
+        
+        #_logger.warn("~ %s" % product.product_template_attribute_value_ids.mapped("name"))
         
         # calculate price
         price = product._compute_price(**kw)
