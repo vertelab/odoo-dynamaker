@@ -17,6 +17,16 @@ Dynamaker plugin
    * Enter arbitrary price algorithm, e.g: price = kw['width'] * kw['length']
    * Save.
 
+* On the same page, go to the variants tab
+   * Remove all existsing variants (Legs and Color)
+   * Add these lines:
+      * Attribute Name: Width, Display Type: Hidden Text, Value: width, Is custom value (the checkbox): checked
+      * Attribute Name: Length, Display Type: Hidden Text, Value: length, Is custom value (the checkbox): checked
+      * Attribute Name: Thickness, Display Type: Hidden Text, Value: thickness, Is custom value (the checkbox): checked
+      * Attribute Name: EdgeType, Display Type: Hidden Text, Value: edgeType, Is custom value (the checkbox): checked
+   * Add the values to the attributes
+   * Save.
+
 * From there, GO TO > "Go to website" > Customize > HTML/CSS/JS > copy-and-paste to browser:
     * XML: /usr/share/odoo-delivery/product_configurator_dynamaker/views/lukas_view.xml
     * JS: /usr/share/odoo-delivery/product_configurator_dynamaker/static/src/js/dynamaker.js
