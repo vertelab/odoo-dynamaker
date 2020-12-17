@@ -2,11 +2,11 @@
 Dynamaker plugin
 
 ## how to setup dynamaker skateboard
-* run odoogitclone odoo-dynamaker
+* If dynamaker is not installed: run odoogitclone odoo-dynamaker
 
-* go to debug mode -> update module list
+* If dynamaker is not installed: go to debug mode -> update module list
 
-* install modules:
+* GO TO Apps and install modules:
     * sale_management
     * website_sale (eCommerce)
     * product_configurator_dynamaker
@@ -21,6 +21,6 @@ Dynamaker plugin
     * XML: /usr/share/odoo-delivery/product_configurator_dynamaker/views/lukas_view.xml
     * JS: /usr/share/odoo-delivery/product_configurator_dynamaker/static/src/js/dynamaker.js
     
-* run odoorestart; odootail
+* Run odoorestart; odootail
 
 * Bob's your uncle
