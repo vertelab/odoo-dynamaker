@@ -19,7 +19,7 @@ Dynamaker plugin
 
 * On the same page, go to the variants tab
    * Remove all existsing variants (Legs and Color)
-   * Add these lines:
+   * Add these lines: (it is important that the value name here is the same as the name recieved from dynamaker)
       * Attribute Name: Width, Display Type: Hidden Text, Value: width, Is custom value (the checkbox): checked
       * Attribute Name: Length, Display Type: Hidden Text, Value: length, Is custom value (the checkbox): checked
       * Attribute Name: Thickness, Display Type: Hidden Text, Value: thickness, Is custom value (the checkbox): checked
