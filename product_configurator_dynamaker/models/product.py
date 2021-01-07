@@ -41,10 +41,12 @@ class WebsiteProductConfiguratorDynamaker(http.Controller):
     # Handles price update as product parameters are modified
     @http.route(['/product_configurator/dynamaker_price'], type='json', auth='public', website=True)
     def product_configurator_dynamaker_price(self, **kw):
-        # get product
-        product = request.env['product.template'].browse(int(kw.get("product_id")))
-
-        # calculate price
-        product.price = product._compute_price(**kw)
+        product_id = int(kw.get("product_id"))
         
-        return {'price': product.price}
+        product = request.env['product.template'].browse(product_id)
+
+        price = product._compute_price(**kw)
+        
+        product.price = price
+        
+        return {'price': price}
