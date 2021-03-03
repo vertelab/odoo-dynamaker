@@ -32,5 +32,3 @@ Dynamaker plugin
     * JS: /usr/share/odoo-delivery/product_configurator_dynamaker/static/src/js/dynamaker.js
     
 * Run odoorestart; odootail
-
-* Bob's your uncle
