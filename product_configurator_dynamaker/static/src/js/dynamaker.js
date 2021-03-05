@@ -4,7 +4,7 @@
 odoo.define("dynamaker_integration_experiment.dynamaker_price_integration", function(require) {
     "use strict";
     var ajax = require('web.ajax');
-
+    
     // Define listener for DynaMaker Events
     window.addEventListener('message', (event)=>{
         // Action for DynaMaker on event
@@ -24,7 +24,8 @@ odoo.define("dynamaker_integration_experiment.dynamaker_price_integration", func
                     if (data.error) {
                         console.error(data.error)
                     } else {
-                        $('span.oe_currency_value').text(data.price)
+						$(document.getElementsByClassName("product_price mt16"))[0].setAttribute('class','product_price mt16');
+						$('span.oe_currency_value').text(data.price)
                     }
                 })
             } catch (err) {
