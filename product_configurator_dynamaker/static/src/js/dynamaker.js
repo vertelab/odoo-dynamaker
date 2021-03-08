@@ -22,7 +22,7 @@ odoo.define("dynamaker_integration_experiment.dynamaker_price_integration", func
                         console.error(data.error)
                     } else {
                         $('span.oe_currency_value').text(data.price)
-					    $(document.getElementsByClassName("product_price mt16"))[0].setAttribute('class','product_price mt16')
+                        $(document.getElementsByClassName("product_price mt16"))[0].setAttribute('class','product_price mt16')
                     }
                 })
             } catch (err) {
