@@ -5,7 +5,7 @@
     'name': 'Dynamaker',
     'version': '1.2',
     'category': 'Sales/Sales',
-    'depends': ['product', 'website', 'sale'],
+    'depends': ['website_sale'],
     'description': """
 Dynamaker: Parametric Product Customization
 ========================================================================

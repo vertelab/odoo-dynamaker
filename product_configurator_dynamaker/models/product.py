@@ -13,6 +13,42 @@ class DynamakerProductAttribute(models.Model):
 
     display_type = fields.Selection(selection_add=[('hidden_text', 'Hidden Text')])
 
+class Product(models.Model):
+    _inherit = 'product.product'
+
+    dynamaker_price = fields.Float(compute='_dynamaker_price')
+
+    def _dynamaker_price(self):
+        line_id = self.env.context.get('order_line_id')
+        custom_values = self.env.context.get('custom_values')
+        line = None
+        if line_id:
+            line = self.env['sale.order.line'].sudo().browse(line_id)
+        for product in self:
+            if not (line or custom_values):
+                product.dynamaker_price = product.list_price
+                continue
+            kw = {"width": 1000, "length": 1000, "edgeType": "standard", "thickness": 10}
+            if line_id:
+                for custom_value in line.product_custom_attribute_value_ids:
+                    try:
+                        cleaned_value = float(custom_value.custom_value)
+                    except Exception as err:
+                        _logger.warn(err)
+                        cleaned_value = custom_value.custom_value
+                    kw[custom_value.custom_product_template_attribute_value_id.name] = cleaned_value
+            elif custom_values:
+                for item in custom_values:
+                    try:
+                        cleaned_value = float(item["custom_value"])
+                    except Exception as err:
+                        _logger.warn(err)
+                        cleaned_value = item["custom_value"]
+                    if cleaned_value:
+                        kw[item["attribute_value_name"]] = cleaned_value
+            price = DynamakerProductTemplate._compute_price(product, **kw)
+            product.dynamaker_price = price
+
 class DynamakerProductTemplate(models.Model):
     _inherit = "product.template"
     
@@ -20,7 +56,7 @@ class DynamakerProductTemplate(models.Model):
 #  - Access the product attributes through the 'kw' dict, eg. kw['width'], and kw['length'].
 #  - Just set the price variable, e.g. price = kw['width'] * kw['length'].
 #\n\n\n\n"""
-    
+
     python_code = fields.Text('Price algorithm', default=DEFAULT_PYTHON_CODE,
                         help="Write a Python algorithm that returns the price of the product.")
 
@@ -31,22 +67,107 @@ class DynamakerProductTemplate(models.Model):
     def _compute_price(self, **kw):
         # construct input to price algorithm
         ldict = {'kw': kw}
-
-        # execute python code with input
-        exec(self.python_code, globals(), ldict)
-        
+        #safely execute user generated python code with input
+        safe_eval(self.python_code.strip(), ldict, mode="exec", nocopy=True)
         return ldict['price']
 
 class WebsiteProductConfiguratorDynamaker(http.Controller):
-    # Handles price update as product parameters are modified
     @http.route(['/product_configurator/dynamaker_price'], type='json', auth='public', website=True)
     def product_configurator_dynamaker_price(self, **kw):
         product_id = int(kw.get("product_id"))
-        
+
         product = request.env['product.template'].browse(product_id)
 
         price = product._compute_price(**kw)
-        
-        product.price = price
-        
+
         return {'price': price}
+
+class SaleOrder(models.Model):
+    _inherit = 'sale.order'
+
+    def _cart_update(self, product_id=None, line_id=None, add_qty=0, set_qty=0, **kwargs):
+        self.ensure_one()
+        product_context = dict(self.env.context)
+        product_context.setdefault('lang', self.sudo().partner_id.lang)
+        SaleOrderLineSudo = self.env['sale.order.line'].sudo().with_context(product_context)
+        try:
+            if add_qty:
+                add_qty = float(add_qty)
+        except ValueError:
+            add_qty = 1
+        try:
+            if set_qty:
+                set_qty = float(set_qty)
+        except ValueError:
+            set_qty = 0
+        quantity = 0
+        order_line = False
+        if self.state != 'draft':
+            request.session['sale_order_id'] = None
+            raise UserError(_('It is forbidden to modify a sales order which is not in draft status.'))
+        if line_id:
+            order_line = self._cart_find_product_line(product_id, line_id, **kwargs)[:1]
+            res = super(SaleOrder, self.with_context(order_line_id=order_line.id))._cart_update(product_id=product_id, line_id=line_id, add_qty=add_qty, set_qty=set_qty, **kwargs)
+        else:
+            res = super(SaleOrder, self.with_context(custom_values=kwargs.get('product_custom_attribute_values') or []))._cart_update(product_id=product_id, line_id=line_id, add_qty=add_qty, set_qty=set_qty, **kwargs)
+        return res
+        product_context = dict(self.env.context)
+        product_context.setdefault('lang', self.sudo().partner_id.lang)
+        order_line = self.env['sale.order.line'].sudo().browse(res['line_id'])
+        no_variant_attributes_price_extra = [ptav.price_extra for ptav in order_line.product_no_variant_attribute_value_ids]
+        values = self.with_context(order_line_id=order_line.id, no_variant_attributes_price_extra=tuple(no_variant_attributes_price_extra))._website_product_id_change(self.id, product_id, qty=order_line.product_uom_qty)
+        if self.pricelist_id.discount_policy == 'with_discount' and not self.env.context.get('fixed_price'):
+            order = order_line.order_id
+            product_context.update({
+                'partner': order.partner_id,
+                'quantity': order_line.product_uom_qty,
+                'date': order.date_order,
+                'pricelist': order.pricelist_id.id,
+                'force_company': order.company_id.id
+            })
+            product = self.env['product.product'].with_context(product_context).browse(product_id)
+            no_variant_attributes_price_extra = [ptav.price_extra for ptav in order_line.product_no_variant_attribute_value_ids]
+            values['price_unit'] = self.env['account.tax']._fix_tax_included_price_company(
+                order_line.with_context(order_line_id=order_line.id)._get_display_price(product),
+                order_line.product_id.taxes_id,
+                order_line.tax_id,
+                self.company_id
+            )
+        order_line.write(values)
+        return res
+
+class Pricelist(models.Model):
+    _inherit = "product.pricelist"
+
+    def _compute_price_rule(self, products_qty_partner, date=False, uom_id=False):
+        pqp = []
+        for product, qty, partner in products_qty_partner:
+            if product.dynamaker_product:
+                if self.env.context.get("order_line_id") or self.env.context.get("custom_values"):
+                    pqp.append((product.with_context(**self.env.context), qty, partner))
+            else:
+                pqp.append((product, qty, partner))
+        products_qty_partner = pqp
+        return super(Pricelist, self)._compute_price_rule(products_qty_partner, date=date, uom_id=uom_id)
+
+class PricelistItem(models.Model):
+    _inherit = "product.pricelist.item"
+
+    base = fields.Selection(selection_add=[
+        ('dynamaker_price', 'Dynamaker price')],
+        help='Base price for computation.\n'
+         'Sales Price: The base price will be the Sales Price.\n'
+         'Cost Price : The base price will be the cost price.\n'
+         'Other Pricelist : Computation of the base price based on another Pricelist.'
+         'Dynamaker pricelist : pricelist for custom products')
+
+class ProductTemplate(models.Model):
+    _inherit = "product.template"
+
+    def _get_combination_info(self, combination=False, product_id=False, add_qty=1, pricelist=False, parent_combination=False, only_template=False):
+        combination_info = super(ProductTemplate, self)._get_combination_info(combination=combination, product_id=product_id, add_qty=add_qty, pricelist=pricelist, parent_combination=parent_combination, only_template=only_template)
+        product = self.env['product.product'].browse(combination_info['product_id']) or self
+        combination_info.update(
+            dynamaker_product=product[0]['dynamaker_product']
+        )
+        return combination_info

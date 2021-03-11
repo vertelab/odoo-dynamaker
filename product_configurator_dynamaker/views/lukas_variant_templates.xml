@@ -7,7 +7,7 @@
     </template>
     <template id="dynamaker_product_price" inherit_id="website_sale.product_price">
 		<xpath expr="//div[@class='product_price mt16']" position="attributes">
-			<attribute name="class">product_price mt16 d-none</attribute>
+			<attribute name="t-attf-class">product_price mt16 #{'d-none' if combination_info['dynamaker_product'] else ''}</attribute>
 		</xpath>
 	</template>
     <template id="inherit_variants" inherit_id="sale.variants">
