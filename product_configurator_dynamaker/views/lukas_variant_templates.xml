@@ -92,7 +92,7 @@
                         <t t-if="product.dynamaker_product">
                             <div class="col-md-6 col-xl-8">
                                 <!-- https://deployed.dynamaker.com/applications/kvOWnEY7tMC -->
-                                <iframe t-att-src="product.dynamaker_url" id='dynamaker-configurator' width="1070" height="700"></iframe>
+                                <iframe t-att-data-src="product.dynamaker_url" id='dynamaker-configurator' width="1070" height="700"></iframe>
                             </div>
                             
                             <div class="row">

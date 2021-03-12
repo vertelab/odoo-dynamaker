@@ -31,6 +31,10 @@ odoo.define("dynamaker_integration_experiment.dynamaker_price_integration", func
             }
         }
     })
+    $(document).ready(function(){
+        let iframe = $('iframe#dynamaker-configurator');
+        iframe.attr('src', iframe.data('src'));
+    });
 })
 
 /*
