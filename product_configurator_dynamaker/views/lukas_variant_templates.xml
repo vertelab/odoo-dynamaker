@@ -7,9 +7,14 @@
     </template>
     <template id="dynamaker_product_price" inherit_id="website_sale.product_price">
 		<xpath expr="//div[@class='product_price mt16']" position="attributes">
-			<attribute name="class">product_price mt16 d-none</attribute>
+			<attribute name="t-attf-class">product_price mt16 #{'d-none' if combination_info['dynamaker_product'] else ''}</attribute>
 		</xpath>
 	</template>
+    <template id="dynamaker_add_to_cart" inherit_id="website_sale.product">
+        <xpath expr="//a[@id='add_to_cart']" position="attributes">
+			<attribute name="style">display: none !important</attribute>
+		</xpath>
+    </template>
     <template id="inherit_variants" inherit_id="sale.variants">
 		<xpath expr="//li" position="attributes">
 			<attribute name="t-attf-class" >variant_attribute #{'d-none' if len(ptal.product_template_value_ids._only_active()) == 1 and not ptal.product_template_value_ids._only_active()[0].is_custom or ptal.attribute_id.display_type == 'hidden_text' else ''}</attribute>
@@ -92,7 +97,7 @@
                         <t t-if="product.dynamaker_product">
                             <div class="col-md-6 col-xl-8">
                                 <!-- https://deployed.dynamaker.com/applications/kvOWnEY7tMC -->
-                                <iframe t-att-src="product.dynamaker_url" id='dynamaker-configurator' width="1070" height="700"></iframe>
+                                <iframe t-att-data-src="product.dynamaker_url" id='dynamaker-configurator' width="1070" height="700"></iframe>
                             </div>
                             
                             <div class="row">

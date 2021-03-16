@@ -26,9 +26,18 @@ Dynamaker plugin
       * Attribute Name: EdgeType, Display Type: Hidden Text, Value: edgeType, Is custom value (the checkbox): checked
    * Add the values to the attributes
    * Save.
+   
+* GO TO Sales > Configuration > Settings:
+   * Check the "Pricelists" checkbox
+   * Check the "Advanced price rules" radio button
+   * Save
 
-* From there, GO TO > "Go to website" > Customize > HTML/CSS/JS > copy-and-paste to browser:
-    * XML: /usr/share/odoo-delivery/product_configurator_dynamaker/views/lukas_view.xml
-    * JS: /usr/share/odoo-delivery/product_configurator_dynamaker/static/src/js/dynamaker.js
+* GO TO Sales > Products > Pricelists:
+   * Click on "Public Pricelist"
+   * Click on " Product: Customizable Desk"
+   * Change "Based on" to "Dynamaker price"
+   * Change "Min. Quantity" to 0
+   * Save
+
     
 * Run odoorestart; odootail

@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<template id="dynamaker_product_price" inherit_id="website_sale.product_price">
+	<xpath class="product_price mt16" position="attributes">
+		<attribute name="class">dynamaker_product_price #{'d-none'}</attribute>
+	</xpath>
+</template>
+    
