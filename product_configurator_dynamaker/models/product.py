@@ -16,7 +16,7 @@ class DynamakerProductAttribute(models.Model):
 
 
 class Product(models.Model):
-    _inherit = 'product.product'
+    _inherit = 'product.template'
 
     dynamaker_price = fields.Float(compute='_dynamaker_price')
 
@@ -36,15 +36,17 @@ class Product(models.Model):
                     try:
                         cleaned_value = float(custom_value.custom_value)
                     except Exception as err:
-                        _logger.warn(err)
+                        _logger.exception(err)
                         cleaned_value = custom_value.custom_value
                     kw[custom_value.custom_product_template_attribute_value_id.name] = cleaned_value # noqa:E501
+            
             elif custom_values:
                 for item in custom_values:
+                    
                     try:
                         cleaned_value = float(item["custom_value"])
                     except Exception as err:
-                        _logger.warn(err)
+                        _logger.exception(err)
                         cleaned_value = item["custom_value"]
                     if cleaned_value:
                         kw[item["attribute_value_name"]] = cleaned_value
@@ -79,10 +81,18 @@ class WebsiteProductConfiguratorDynamaker(http.Controller):
     @http.route(['/product_configurator/dynamaker_price'],
                 type='json', auth='public', website=True)
     def product_configurator_dynamaker_price(self, **kw):
-        product_id = int(kw.get("product_id"))
+        qty = kw.get("qty", 1)
+        product_id = int(kw.get('custom_values', {}).get("product_id"))
+        custom_values = []
+        for key, value in kw.get('custom_values', {}).items():
+            custom_values.append({'attribute_value_name': key, 'custom_value': value})
         product = request.env['product.template'].browse(product_id)
-        price = product._compute_price(**kw)
-        return {'price': price}
+        product = product.product_variant_ids[0].with_context(
+            custom_values=custom_values)
+        pricelist = request.website.get_current_pricelist()
+        price = pricelist.get_product_price(product, qty, request.env.user.partner_id)
+        price = round(price, pricelist.currency_id.decimal_places)
+        return {'price': f"{price:.2f}"}
 
 
 class SaleOrder(models.Model):
@@ -117,36 +127,6 @@ class SaleOrder(models.Model):
                         or []))._cart_update(product_id=product_id, line_id=line_id,
                         add_qty=add_qty, set_qty=set_qty, **kwargs)
         return res
-        product_context = dict(self.env.context)
-        product_context.setdefault('lang', self.sudo().partner_id.lang)
-        order_line = self.env['sale.order.line'].sudo().browse(res['line_id'])
-        no_variant_attributes_price_extra = [ptav.price_extra for ptav in
-            order_line.product_no_variant_attribute_value_ids]
-        values = self.with_context(order_line_id=order_line.id,
-        no_variant_attributes_price_extra=tuple(no_variant_attributes_price_extra))._website_product_id_change(self.id,
-        product_id, qty=order_line.product_uom_qty)
-        if self.pricelist_id.discount_policy == 'with_discount' and not self.env.context.get('fixed_price'):
-            order = order_line.order_id
-            product_context.update({
-                'partner': order.partner_id,
-                'quantity': order_line.product_uom_qty,
-                'date': order.date_order,
-                'pricelist': order.pricelist_id.id,
-                'force_company': order.company_id.id
-            })
-            product = self.env['product.product'].with_context(product_context).browse(product_id)
-            no_variant_attributes_price_extra = [
-                ptav.price_extra for ptav in
-                order_line.product_no_variant_attribute_value_ids
-            ]
-            values['price_unit'] = self.env['account.tax']._fix_tax_included_price_company(
-                order_line.with_context(order_line_id=order_line.id)._get_display_price(product),
-                order_line.product_id.taxes_id,
-                order_line.tax_id,
-                self.company_id
-            )
-        order_line.write(values)
-        return res
 
 
 class Pricelist(models.Model):
@@ -160,9 +140,8 @@ class Pricelist(models.Model):
         # necessary to calculate the price of a dynamaker_product
         pqp = []
         for product, qty, partner in products_qty_partner:
-            if product.dynamaker_product:
-                if self.env.context.get("order_line_id") or self.env.context.get("custom_values"):
-                    pqp.append((product.with_context(**self.env.context), qty, partner))
+            if product.dynamaker_product and (self.env.context.get("order_line_id") or self.env.context.get("custom_values")):
+                pqp.append((product.with_context(**self.env.context), qty, partner))
             else:
                 pqp.append((product, qty, partner))
         products_qty_partner = pqp
