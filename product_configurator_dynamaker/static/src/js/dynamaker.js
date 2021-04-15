@@ -8,10 +8,31 @@ odoo.define("dynamaker_integration_experiment.dynamaker_price_integration", func
     window.addEventListener('message', (event)=>{
         // Action for DynaMaker on event
         if (event.origin === 'https://deployed.dynamaker.com') {
+
             try {
                 const parametersFromDynaMaker = event.data    // Structured data coming from DynaMaker
-                
+
+                if (parametersFromDynaMaker instanceof Blob){ // If Blob = drawing sent from dynamaker
+                    console.log('blobfile')
+                    
+                 var reader = new FileReader();
+                 reader.readAsDataURL(parametersFromDynaMaker); 
+                 reader.onloadend = function() {
+                     var base64data = reader.result;                
+                     ajax.jsonRpc('/dynamaker/drawing', 'call', {
+                         blobFile: base64data, qty: 1
+                         }).then(function(data) { 
+                                document.querySelector("input[data-attribute_value_name='drawing']").value = data.attachment_id
+                             });
+                    $(document.getElementsByClassName("product_price mt16"))[0].setAttribute('class','product_price mt16')
+                    $(document.getElementById("add_to_cart").removeAttribute('style'))
+                    }
+                    
+                    }
+                 else {
                 for (var key in parametersFromDynaMaker) {
+                    console.log(parametersFromDynaMaker[key]);
+                    console.log("key: " + key);
                     if (parametersFromDynaMaker.hasOwnProperty(key)) {
                         document.querySelector("input[data-attribute_value_name='" + key + "']").value = parametersFromDynaMaker[key]
                     }
@@ -27,6 +48,7 @@ odoo.define("dynamaker_integration_experiment.dynamaker_price_integration", func
                         $(document.getElementById("add_to_cart").removeAttribute('style'))
                     }
                 })
+            }
             } catch (err) {
                 console.warn('Invalid JSON data from DynaMaker')
                 console.warn(err)
@@ -34,8 +56,16 @@ odoo.define("dynamaker_integration_experiment.dynamaker_price_integration", func
         }
     })
     $(document).ready(function(){
+        
         let iframe = $('iframe#dynamaker-configurator');
         iframe.attr('src', iframe.data('src'));
+      //  $(document.getElementById("add_to_cart").hide());
+    });
+    $("body").on("click",".a-submit-dynamaker",function(ev){
+    console.log("submitting....");
+    var iframeWin = document.getElementById("dynamaker-configurator").contentWindow;
+    iframeWin.postMessage("send event to dynamaker", "https://deployed.dynamaker.com");
+    $(document.getElementById("add_to_cart").click());
     });
 })
 

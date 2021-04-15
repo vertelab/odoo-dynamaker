@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="dynamaker_js" inherit_id="web.assets_frontend">
+		<xpath expr="script[last()]" position="after">
+            <script type="text/javascript" src="/dynamaker/static/src/js/dynamaker.js"/>        
+        </xpath>
+    </template>
+    <template id="dynamaker_add_to_cart_new" inherit_id="product_configurator_dynamaker.dynamaker_add_to_cart">
+        <xpath expr="//a[@id='add_to_cart']" position="attributes">
+            <attribute name="style">display: none !important</attribute>
+        </xpath>
+        <xpath expr="//a[@id='add_to_cart']" position="after">
+            <a role="button" id="add_to_cart_dynamaker_prod" class="a-submit-dynamaker btn btn-primary btn-lg mt16" href="#"><i class="fa fa-shopping-cart"/>Add Dynamaker product to cart</a>
+		</xpath>
+    </template>
+</odoo>

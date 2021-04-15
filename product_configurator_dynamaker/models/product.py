@@ -21,6 +21,9 @@ class Product(models.Model):
     dynamaker_price = fields.Float(compute='_dynamaker_price')
 
     def _dynamaker_price(self):
+                
+        # cleaned_value = float(item["custom_value"])
+        # ValueError: could not convert string to float: 'standard'
         line_id = self.env.context.get('order_line_id')
         custom_values = self.env.context.get('custom_values')
         line = None
@@ -42,7 +45,6 @@ class Product(models.Model):
             
             elif custom_values:
                 for item in custom_values:
-                    
                     try:
                         cleaned_value = float(item["custom_value"])
                     except Exception as err:
@@ -52,6 +54,7 @@ class Product(models.Model):
                         kw[item["attribute_value_name"]] = cleaned_value
             price = DynamakerProductTemplate._compute_price(product, **kw)
             product.dynamaker_price = price
+            _logger.info(f'returnprice {price}')
 
 
 class DynamakerProductTemplate(models.Model):
@@ -126,6 +129,16 @@ class SaleOrder(models.Model):
             res = super(SaleOrder, self.with_context(custom_values=kwargs.get('product_custom_attribute_values')
                         or []))._cart_update(product_id=product_id, line_id=line_id,
                         add_qty=add_qty, set_qty=set_qty, **kwargs)
+                        
+        attribute_values = kwargs.get('product_custom_attribute_values')
+        if attribute_values:
+            for value in attribute_values:
+                custom_vals = value.get('custom_values')
+                if value['attribute_value_name'] == 'drawing':
+                    attachment_id = value['custom_value']
+                    if attachment_id:
+                        drawing = self.env['ir.attachment'].browse(int(attachment_id))
+                        drawing.res_id = self.id
         return res
 
 
