@@ -15,13 +15,23 @@ class WebsiteProductDynamakerDrawing(http.Controller):
                 type='json', auth='public', website=True)
     def product_configurator_dynamaker_price(self, **kw):
         blob = kw.get('blobFile')
-        splitBlob = blob.split(",")
-        fileData = splitBlob[1]
-        fileHeader = splitBlob[0]    
-
+        split_blob = blob.split(",")
+        file_data = split_blob[1]
+        file_header = split_blob[0]    
+        file_name = 'tempfile.dfx'
+        if file_header == 'data:application/pdf;base64':
+            file_name = 'tempfile.pdf'
         attachment = request.env['ir.attachment'].create({
-            'name': 'testfil.pdf',
-            'res_model': 'sale.order',
-            'datas': fileData,
-        })
+                'name': file_name,
+                'res_model': 'sale.order.line',
+                'datas': file_data,
+            })
+        
         return {'attachment_id': f"{attachment.id}"}
+        
+class SaleOrderLine(models.Model):
+    _inherit = 'sale.order.line'
+    
+    # attachment_ids = fields.Many2many('ir.attachment', 'sale_order_line_drawing_ir_attachments_rel','rental_id', 'attachment_id', string="Attachments")
+        
+    # return res
