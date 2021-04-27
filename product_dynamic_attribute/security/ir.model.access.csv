@@ -1,3 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_product_dynamic_attribute_manager,product.product.dynamic_attribute_manager,model_product_dynamic_attribute,base.group_partner_manager,1,1,1,1
-access_product_dynamic_attribute,product.product.dynamic_attribute,model_product_dynamic_attribute,,1,0,0,0
