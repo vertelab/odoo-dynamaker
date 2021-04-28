@@ -2,10 +2,10 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 {
-    'name': 'Dynamaker_temp_name',
+    'name': 'Dynamaker MRP',
     'version': '1.2',
-    'category': 'Sales/Sales',
-    'depends': ['product_configurator_dynamaker'],
+    'category': 'MRP',
+    'depends': ['product_configurator_dynamaker', 'mrp'],
     'description': """
 Dynamaker: 
 ========================================================================
