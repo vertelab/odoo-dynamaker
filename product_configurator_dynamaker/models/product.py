@@ -140,7 +140,6 @@ class SaleOrder(models.Model):
                         drawing = self.env['ir.attachment'].browse(int(attachment_id))
                         last_id = self.order_line.search([], order='id desc')[0].id
                         drawing.res_id = last_id
-                        _logger.info(f'david 123 order_line.id   {last_id}')
         return res
 
 

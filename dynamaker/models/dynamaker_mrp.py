@@ -21,26 +21,17 @@ class MrpProduction(models.Model):
     @api.model
     def create(self, vals):
         
+        #TODO Avoid searching on origin
         
-        # Look up sale order lines and compare to already created MRP production records and
-        # compare the sale_line_id. 
-        # If the id already exists then remove id and insert the next sale_order_line_id to mrp_procuction.sale_line_id
-        sale_order = self.env['sale.order'].search([('name','=', vals['origin'])])
-        line_ids = []
-        if sale_order:
-            lines = self.env['sale.order.line'].search([('order_id','=',sale_order.id)])
-            if lines:
-                for line in lines:
-                    if line.product_template_id.dynamaker_product:
-                        line_ids.append(line.id)
-            
-            mrp_production_ids = self.env['mrp.production'].search([('origin','=', sale_order.name)])
-            if mrp_production_ids:
-                for mrp_production in mrp_production_ids:
-                    if mrp_production.sale_line_id.id in line_ids:
-                        line_ids.remove(mrp_production.sale_line_id.id)
-            if line_ids:
-                vals.update({'sale_line_id': line_ids[0]})
+        # Get sale order lines that are Dynamaker products, and that are not present in mrp production already.
+        # Then update vals to set sale order line to created mrp.production record.
+        sale_order = self.env['sale.order'].search([('name','=', vals['origin'])])            
+        mrp_production_ids = self.env['mrp.production'].search([('origin','=', sale_order.name)])
+        line_ids = sale_order.order_line.with_context(m_line = mrp_production_ids).filtered(lambda l: l.product_template_id.dynamaker_product and not l.id in l._context['m_line'].mapped('sale_line_id.id')).ids
+        if line_ids:
+            _logger.info('david is here {}'.format(line_ids))
+            _logger.info('david is here {}'.format(mrp_production_ids.ids))
+            vals.update({'sale_line_id': line_ids[0]})
                     
 
         res = super(MrpProduction, self).create(vals)
