@@ -25,15 +25,32 @@ class MrpProduction(models.Model):
 
         # Get sale order lines that are Dynamaker products, and that are not present in mrp production already.
         # Then update vals to set sale order line to created mrp.production record.
-        sale_order = self.env['sale.order'].search([('name','=', vals['origin'])])
-        mrp_production_ids = self.env['mrp.production'].search([('origin','=', sale_order.name)])
-        line_ids = sale_order.order_line.with_context(m_line = mrp_production_ids).filtered(lambda l: l.product_template_id.dynamaker_product and not l.id in l._context['m_line'].mapped('sale_line_id.id')).ids
-        if line_ids:
-            vals.update({'sale_line_id': line_ids[0]})
+        if self.product_id.dynamaker_product:
+            sale_order = self.env['sale.order'].search([('name','=', vals['origin'])])
+            mrp_production_ids = self.env['mrp.production'].search([('origin','=', sale_order.name)])
+            line_ids = sale_order.order_line.with_context(
+                    m_line = mrp_production_ids).filtered(
+                            lambda l: l.product_template_id.dynamaker_product and not
+                            l.id in l._context['m_line'].mapped('sale_line_id.id')).ids
+            if line_ids:
+                vals.update({'sale_line_id': line_ids[0]})
 
 
         res = super(MrpProduction, self).create(vals)
-        res._get_sale_order_attachment_to_mrp(vals)
+
+
+        # Create a copy of bom list
+        # Then loop over and set new vals to bom line ids
+        # Set bom to new one with updated bom line vals
+        if self.product_id.dynamaker_product:
+            res._get_sale_order_attachment_to_mrp(vals)
+            bom_copy = res.bom_id.copy()
+            bom_copy.code = sale_order.name
+            for bom_line in bom_copy.bom_line_ids:
+                bom_line.product_qty = 123
+
+            res.bom_id = bom_copy
+
         return res
 
     def _get_sale_order_attachment_to_mrp(self, vals):
@@ -58,3 +75,13 @@ class MrpProduction(models.Model):
                 'index_content': sale_order_line_attachment.index_content,
                 'res_id': self.id
             })
+
+    def _create_bom_list(self):
+
+        bom_line_vals = {
+            'product_id': 1,
+            'bom_id': 1,
+            'product_qty': 1,
+            #'product_uom_id': 1, has default
+        }
+
