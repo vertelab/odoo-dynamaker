@@ -7,17 +7,14 @@
     'category': 'MRP',
     'depends': ['product_configurator_dynamaker', 'mrp'],
     'description': """
-Dynamaker: 
-========================================================================
-
-Add info here
+Dynamaker extension to the mrp module
 
     """,
     'data': [
-    #'views/mrp_production_form_dynamaker.xml',
      'views/product_views.xml',
     ],
-    'application': True,
+    'demo': ['data/dynamaker_demo.xml'],
+    'application': False,
     'installable': True,
     'auto_install': False,
 }

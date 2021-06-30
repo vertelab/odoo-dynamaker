@@ -2,7 +2,7 @@
 <odoo>
 	<template id="dynamaker_js" inherit_id="web.assets_frontend">
 		<xpath expr="script[last()]" position="after">
-            <script type="text/javascript" src="/dynamaker/static/src/js/dynamaker.js"/>        
+            <script type="text/javascript" src="/mrp_dynamaker/static/src/js/dynamaker.js"/>
         </xpath>
     </template>
     <template id="dynamaker_add_to_cart_new" inherit_id="product_configurator_dynamaker.dynamaker_add_to_cart">

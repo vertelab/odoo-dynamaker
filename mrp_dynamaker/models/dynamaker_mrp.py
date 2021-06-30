@@ -50,9 +50,11 @@ class MrpProduction(models.Model):
                 sale_lines = self.env['sale.order.line'].browse(line_ids)
                 for sale_line in sale_lines:
                     for custom_attr in sale_line.product_custom_attribute_value_ids:
-                        if custom_attr.name.split(':')[0] == bom_line.product_id.default_code:
-                            bom_line.product_qty = int(custom_attr.custom_value)
-                            _logger.info('david adding attrs bom line stuff...')
+                        try:
+                            if custom_attr.name.split(':')[1].strip() == bom_line.product_id.default_code:
+                                bom_line.product_qty = int(custom_attr.custom_value)
+                        except Exception as e:
+                            _logger.warning(f'Attribute not found, {e}')
 
 
             res.bom_id = bom_copy
