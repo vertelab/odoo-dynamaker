@@ -8,30 +8,41 @@ import base64
 import logging
 _logger = logging.getLogger(__name__)
 
-    
+
+
+class DynamakerMrp(models.Model):
+    _name = 'dynamaker.mrp'
+
+
 
 class WebsiteProductDynamakerDrawing(http.Controller):
-    @http.route(['/dynamaker/drawing'],
+    @http.route(['/dynamaker/mrpdata'],
                 type='json', auth='public', website=True)
-    def product_configurator_dynamaker_price(self, **kw):
-        blob = kw.get('blobFile')
-        split_blob = blob.split(",")
-        file_data = split_blob[1]
-        file_header = split_blob[0]    
-        file_name = 'tempfile.dfx'
-        if file_header == 'data:application/pdf;base64':
-            file_name = 'tempfile.pdf'
-        attachment = request.env['ir.attachment'].create({
-                'name': file_name,
-                'res_model': 'sale.order.line',
-                'datas': file_data,
-            })
-        
-        return {'attachment_id': f"{attachment.id}"}
-        
-class SaleOrderLine(models.Model):
-    _inherit = 'sale.order.line'
-    
-    # attachment_ids = fields.Many2many('ir.attachment', 'sale_order_line_drawing_ir_attachments_rel','rental_id', 'attachment_id', string="Attachments")
-        
-    # return res
+    def parse_dynamaker_mrp_data(self, **kw):
+        data = kw.get('mrpData')
+        _logger.info(f'david data: {data}')
+        _logger.info(f'david drawings: {data.get("drawings")}')
+        _logger.info(f'david quantity: {data.get("quantities")}')
+        drawings = data.get("drawings")
+        if not drawings:
+            return
+        attachment_ids = []
+        for drawing in drawings:
+            key, value = list(drawing.items())[0]
+            drawing_blob = value.split(",")
+            file_data = drawing_blob[1]
+            file_header = drawing_blob[0]
+
+            suffix = "pdf" \
+                if file_header == "data:application/pdf;base64" \
+                else "dtx"
+            file_name = f'{key}.{suffix}'
+            _logger.info(f'david attachment name so: {file_name}')
+            attachment = request.env['ir.attachment'].create({
+                    'name': file_name,
+                    'res_model': 'sale.order.line',
+                    'datas': file_data,
+                })
+            attachment_ids.append(attachment.id)
+        _logger.info(f'drawings attachment ids: {attachment_ids}')
+        return {'attachment_id': f"{attachment_ids}"}
