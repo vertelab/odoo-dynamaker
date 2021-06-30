@@ -3,18 +3,15 @@
     <data noupdate="1">
         <!--    Staircase   -->
         <record id="dynamaker_product_staircase" model="product.template">
-            <field name="name">Staircase demo</field>
+            <field name="name">Staircase Dynamaker</field>
             <field name="dynamaker_product">True</field>
             <field name="dynamaker_url">https://deployed.dynamaker.com/applications/test/XhSiSA3nqrA/</field>
-            <field name="python_code">kw['width'] + kw['height'] + kw['depth']</field>
+            <field name="python_code">price = kw['width'] + kw['height'] + kw['depth']</field>
+            <field name="image_1920" type="base64" file="product_configurator_dynamaker/static/img/staircase.png"/>
+            <field name="description">Configurable Staircase using Dynamaker</field>
         </record>
 
         <!--    Product Attribute-->
-        <record id="dynamaker_product_attribute_drawing" model="product.attribute">
-            <field name="name">Drawing</field>
-            <field name="create_variant">always</field>
-            <field name="display_type">hidden_text</field>
-        </record>
         <record id="dynamaker_product_attribute_width" model="product.attribute">
             <field name="name">Width</field>
             <field name="create_variant">always</field>
@@ -30,23 +27,8 @@
             <field name="create_variant">always</field>
             <field name="display_type">hidden_text</field>
         </record>
-        <record id="dynamaker_product_attribute_stepqty" model="product.attribute">
-            <field name="name">StepQty</field>
-            <field name="create_variant">always</field>
-            <field name="display_type">hidden_text</field>
-        </record>
-        <record id="dynamaker_product_attribute_railingqty" model="product.attribute">
-            <field name="name">RailingQty</field>
-            <field name="create_variant">always</field>
-            <field name="display_type">hidden_text</field>
-        </record>
 
         <!--    Product Attribute Value-->
-        <record id="dynamaker_product_attribute_value_drawing" model="product.attribute.value">
-            <field name="name">drawing</field>
-            <field name="is_custom">True</field>
-            <field name="attribute_id" ref="dynamaker_product_attribute_drawing"/>
-        </record>
         <record id="dynamaker_product_attribute_value_width" model="product.attribute.value">
             <field name="name">width</field>
             <field name="is_custom">True</field>
@@ -62,23 +44,8 @@
             <field name="is_custom">True</field>
             <field name="attribute_id" ref="dynamaker_product_attribute_height"/>
         </record>
-        <record id="dynamaker_product_attribute_value_stepquantity" model="product.attribute.value">
-            <field name="name">stepQuantity</field>
-            <field name="is_custom">True</field>
-            <field name="attribute_id" ref="dynamaker_product_attribute_stepqty"/>
-        </record>
-        <record id="dynamaker_product_attribute_value_railingquantity" model="product.attribute.value">
-            <field name="name">railingQuantity</field>
-            <field name="attribute_id" ref="dynamaker_product_attribute_railingqty"/>
-            <field name="is_custom">True</field>
-        </record>
 
         <!--    Product template attribute lines-->
-        <record id="dynamaker_product_template_attribute_line_drawing" model="product.template.attribute.line">
-            <field name="product_tmpl_id" ref="dynamaker_product_staircase"/>
-            <field name="attribute_id" ref="dynamaker_product_attribute_drawing"/>
-            <field name="value_ids" eval="[(6, 0, [ref('dynamaker_product_attribute_value_drawing')])]"/>
-        </record>
         <record id="dynamaker_product_template_attribute_line_width" model="product.template.attribute.line">
             <field name="product_tmpl_id" ref="dynamaker_product_staircase"/>
             <field name="attribute_id" ref="dynamaker_product_attribute_width"/>
@@ -93,16 +60,6 @@
             <field name="product_tmpl_id" ref="dynamaker_product_staircase"/>
             <field name="attribute_id" ref="dynamaker_product_attribute_height"/>
             <field name="value_ids" eval="[(6, 0, [ref('dynamaker_product_attribute_value_height')])]"/>
-        </record>
-        <record id="dynamaker_product_template_attribute_line_stepqty" model="product.template.attribute.line">
-            <field name="product_tmpl_id" ref="dynamaker_product_staircase"/>
-            <field name="attribute_id" ref="dynamaker_product_attribute_stepqty"/>
-            <field name="value_ids" eval="[(6, 0, [ref('dynamaker_product_attribute_value_stepquantity')])]"/>
-        </record>
-        <record id="dynamaker_product_template_attribute_line_railingqty" model="product.template.attribute.line">
-            <field name="product_tmpl_id" ref="dynamaker_product_staircase"/>
-            <field name="attribute_id" ref="dynamaker_product_attribute_railingqty"/>
-            <field name="value_ids" eval="[(6, 0, [ref('dynamaker_product_attribute_value_railingquantity')])]"/>
         </record>
         <!--    Pricelist-->
         <record id="dynamaker_product_pricelist" model="product.pricelist">
