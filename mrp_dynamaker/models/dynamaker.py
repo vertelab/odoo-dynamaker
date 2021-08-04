@@ -20,9 +20,6 @@ class WebsiteProductDynamakerDrawing(http.Controller):
                 type='json', auth='public', website=True)
     def parse_dynamaker_mrp_data(self, **kw):
         data = kw.get('mrpData')
-        _logger.info(f'david data: {data}')
-        _logger.info(f'david drawings: {data.get("drawings")}')
-        _logger.info(f'david quantity: {data.get("quantities")}')
         drawings = data.get("drawings")
         if not drawings:
             return
@@ -37,12 +34,10 @@ class WebsiteProductDynamakerDrawing(http.Controller):
                 if file_header == "data:application/pdf;base64" \
                 else "dtx"
             file_name = f'{key}.{suffix}'
-            _logger.info(f'david attachment name so: {file_name}')
             attachment = request.env['ir.attachment'].create({
                     'name': file_name,
                     'res_model': 'sale.order.line',
                     'datas': file_data,
                 })
             attachment_ids.append(attachment.id)
-        _logger.info(f'drawings attachment ids: {attachment_ids}')
         return {'attachment_id': f"{attachment_ids}"}

@@ -122,8 +122,7 @@
                                             </t>
                                             <p t-if="True" class="css_not_available_msg alert alert-warning">This combination does not exist.</p>
                                             <t t-call="website_sale.product_price"/>
-                                            <a role="button" id="add_to_cart" class="btn btn-primary btn-lg mt16 js_check_product a-submit d-block d-sm-inline-block" href="#" style="display: none !important">
-                                                <i class="fa fa-shopping-cart"/> Add to cart
+                                            <a id="add_to_cart" href="#" style="display: none !important">
                                             </a>
                                             <div id="product_option_block"/></div>
                                     </form>

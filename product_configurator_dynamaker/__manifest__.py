@@ -2,7 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 {
-    'name': 'Dynamaker',
+    'name': 'Dynamaker Webshop',
     'version': '1.2',
     'category': 'Sales/Sales',
     'depends': ['website_sale', 'sale_management'],

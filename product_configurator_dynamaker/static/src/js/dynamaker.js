@@ -8,41 +8,52 @@ odoo.define("dynamaker_integration_experiment.dynamaker_price_integration", func
     window.addEventListener('message', (event) => {
         // Action for DynaMaker on event
         if (event.origin === 'https://deployed.dynamaker.com') {
-
             try {
                 const parametersFromDynaMaker = event.data
                 for (const [k, value] of Object.entries(parametersFromDynaMaker)) {
                     if (k === 'mrpData') {
 
                         for (var key in value['quantities']) {
-                            console.log(value['quantities'][key]);
                             if (value['quantities'].hasOwnProperty(key)) {
                                 document.querySelector("input[data-attribute_value_name='" + key + "']").value = value['quantities'][key]
                             }
                         }
-                    // value= { quantities: {…}, drawings: {…} }
-                        var reader = new FileReader();
                         let drawings = []
-                        for (const [drawingName, drawingVal] of Object.entries(value['drawings'])) {
-                        console.log(drawingVal)
-                            reader.readAsDataURL(drawingVal);
-                            console.log(drawingName)
-                            reader.onloadend = function() {
-                                var base64data = reader.result;
-                                drawings.push({
-                                    [drawingName]: base64data,
+                    // value= { quantities: {…}, drawings: {…} }
+                    const toBase64 = file => new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.readAsDataURL(file);
+                        reader.onload = () => resolve(reader.result);
+                        reader.onerror = error => reject(error);
+                    });
+
+                    async function readDynamakerData(drawingName,dynamakerData) {
+                        const file = dynamakerData;
+                        const a = await toBase64(file);
+
+                        console.log('a' + a)
+                        drawings.push({
+                                    [drawingName]: a,
                                 })
-                            }
+                     }
+                        var reader = new FileReader();
+                        for (const [drawingName, drawingVal] of Object.entries(value['drawings'])) {
+                                   readDynamakerData(drawingName, drawingVal)
                         }
-                        value['drawings'] = drawings
+
+                        setTimeout(() => {
+
+                                                 value['drawings'] = drawings
                         ajax.jsonRpc('/dynamaker/mrpdata', 'call', {
                             mrpData: value,
                             qty: 1
                         }).then(function(data) {
                             document.querySelector("input[data-attribute_value_name='drawing']").value = data.attachment_id
+                            console.log('attachments ids:::::  ',data.attachment_id)
+                                        console.log('Here 4')
+                            document.getElementById("add_to_cart").click();
                         });
-
-
+                         }, 500);
 
                     } else {
                         for (var key in parametersFromDynaMaker) {
@@ -73,6 +84,7 @@ odoo.define("dynamaker_integration_experiment.dynamaker_price_integration", func
             }
         }
     })
+
     $(document).ready(function() {
         let iframe = $('iframe#dynamaker-configurator');
         iframe.attr('src', iframe.data('src'));
@@ -82,7 +94,3 @@ odoo.define("dynamaker_integration_experiment.dynamaker_price_integration", func
         iframeWin.postMessage("send event to dynamaker", "https://deployed.dynamaker.com");
     });
 })
-
-/*
- * parametersFromDynaMaker = Object { width: 1000, length: 1280, thickness: 10, edgeType: "standard" }
- */

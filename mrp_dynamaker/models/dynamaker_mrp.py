@@ -26,7 +26,6 @@ class MrpProduction(models.Model):
         # Get sale order lines that are Dynamaker products, and that are not present in mrp production already.
         # Then update vals to set sale order line to created mrp.production record.
         sale_order = self.env['sale.order'].search([('name', '=', vals['origin'])])
-        _logger.info(f'david {sale_order}')
         mrp_production_ids = self.env['mrp.production'].search([('origin', '=', sale_order.name)])
         line_ids = sale_order.order_line.with_context(
                 m_line=mrp_production_ids).filtered(
@@ -62,7 +61,6 @@ class MrpProduction(models.Model):
         return res
 
     def _get_sale_order_attachment_to_mrp(self, vals):
-        _logger.info('david get sale order attachment')
 
         # Getting the attachment from sale_line_id and creating a
         # new attachment for mrp_production
@@ -71,8 +69,6 @@ class MrpProduction(models.Model):
                                     ('res_id', '=', vals.get('sale_line_id')),
                                     ('res_model', '=', 'sale.order.line')
                                     ])
-        _logger.info(f'david  sale_order_line_attachment:  {sale_order_line_attachment}')
-        _logger.info(f'david  attachment names:  {[x.name for x in sale_order_line_attachment]}')
         if sale_order_line_attachment:
             for line in sale_order_line_attachment:
                 attachment = request.env['ir.attachment'].create({
@@ -86,13 +82,3 @@ class MrpProduction(models.Model):
                     'index_content': line.index_content,
                     'res_id': self.id
                 })
-
-    # def _create_bom_list(self):
-    #
-    #     bom_line_vals = {
-    #         'product_id': 1,
-    #         'bom_id': 1,
-    #         'product_qty': 1,
-    #         #'product_uom_id': 1, has default
-    #     }
-

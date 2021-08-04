@@ -10,7 +10,7 @@
             <attribute name="style">display: none !important</attribute>
         </xpath>
         <xpath expr="//a[@id='add_to_cart']" position="after">
-            <a role="button" id="add_to_cart_dynamaker_prod" class="a-submit-dynamaker btn btn-primary btn-lg mt16" href="#"><i class="fa fa-shopping-cart"/>Add Dynamaker product to cart</a>
+            <a role="button" id="add_to_cart_dynamaker_prod" class="a-submit-dynamaker btn btn-primary btn-lg mt16" href="#"><i class="fa fa-shopping-cart"/>Add to cart</a>
 		</xpath>
     </template>
 </odoo>
