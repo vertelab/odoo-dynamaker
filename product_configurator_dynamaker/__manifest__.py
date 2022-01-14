@@ -2,10 +2,10 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 {
-    'name': 'Dynamaker',
+    'name': 'Dynamaker Webshop',
     'version': '1.2',
     'category': 'Sales/Sales',
-    'depends': ['website_sale'],
+    'depends': ['website_sale', 'sale_management'],
     'description': """
 Dynamaker: Parametric Product Customization
 ========================================================================
@@ -15,8 +15,9 @@ Build and Publish Your Own Online Visual CAD Configurators that automatically ca
     """,
     'data': [
         'views/product_views.xml',
-        'views/lukas_variant_templates.xml'
+        'views/dynamaker_website_sale.xml'
     ],
+    'demo': ['data/dynamaker_demo.xml'],
     'installable': True,
     'auto_install': False,
 }

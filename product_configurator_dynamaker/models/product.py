@@ -3,7 +3,7 @@
 from odoo import api, fields, http, models, tools, _
 from odoo.http import request
 from odoo.tools.safe_eval import safe_eval
-
+import ast
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -42,7 +42,6 @@ class Product(models.Model):
             
             elif custom_values:
                 for item in custom_values:
-                    
                     try:
                         cleaned_value = float(item["custom_value"])
                     except Exception as err:
@@ -103,6 +102,8 @@ class SaleOrder(models.Model):
         self.ensure_one()
         product_context = dict(self.env.context)
         product_context.setdefault('lang', self.sudo().partner_id.lang)
+        for prodc in product_context:
+            _logger.info(f' prodc{prodc}')
         SaleOrderLineSudo = self.env['sale.order.line'].sudo().with_context(product_context) # noqa:E501
         try:
             if add_qty:
@@ -120,12 +121,32 @@ class SaleOrder(models.Model):
             raise UserError(_('It is forbidden to modify a sales order which is not in draft status.')) # noqa:E501
         if line_id:
             order_line = self._cart_find_product_line(product_id,line_id, **kwargs)[:1]  # noqa:E501
+            
             res = super(SaleOrder, self.with_context(order_line_id=order_line.id))._cart_update(product_id=product_id,  # noqa:E501
                         line_id=line_id, add_qty=add_qty, set_qty=set_qty, **kwargs)  # noqa:E501
         else:
+            _logger.info(f'prodc price {line_id}')
             res = super(SaleOrder, self.with_context(custom_values=kwargs.get('product_custom_attribute_values')
                         or []))._cart_update(product_id=product_id, line_id=line_id,
                         add_qty=add_qty, set_qty=set_qty, **kwargs)
+        _logger.info(f'david kwargs {kwargs}')
+        attribute_values = kwargs.get('product_custom_attribute_values')
+        if attribute_values:
+            for value in attribute_values:
+                custom_vals = value.get('custom_values')
+                if value['attribute_value_name'] == 'drawing':
+                    _logger.info(f'attribute value name: {value["attribute_value_name"]}')
+                    _logger.info(f'custom value : {value["custom_value"]}')
+
+                    attachment_ids = value['custom_value']
+                    for attachment_id in ast.literal_eval(attachment_ids):
+                        if attachment_id:
+                            try:
+                                drawing = self.env['ir.attachment'].browse(int(attachment_id))
+                                last_id = self.order_line.search([], order='id desc')[0].id
+                                drawing.res_id = last_id
+                            except Exception as e:
+                                _logger.warning(f'Invalid custom value, {e}')
         return res
 
 

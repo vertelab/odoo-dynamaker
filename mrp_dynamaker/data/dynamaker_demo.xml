@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data noupdate="1">
+<!--        product.attribute   -->
+        <record id="dynamaker_product_attribute_drawing" model="product.attribute">
+            <field name="name">Drawings</field>
+            <field name="create_variant">always</field>
+            <field name="display_type">hidden_text</field>
+        </record>
+        <record id="dynamaker_product_attribute_stepqty" model="product.attribute">
+            <field name="name">Step</field>
+            <field name="create_variant">always</field>
+            <field name="display_type">hidden_text</field>
+        </record>
+        <record id="dynamaker_product_attribute_railingqty" model="product.attribute">
+            <field name="name">Railing</field>
+            <field name="create_variant">always</field>
+            <field name="display_type">hidden_text</field>
+        </record>
+
+<!--        product.attribute.value -->
+        <record id="dynamaker_product_attribute_value_drawing" model="product.attribute.value">
+            <field name="name">drawing</field>
+            <field name="is_custom">True</field>
+            <field name="attribute_id" ref="dynamaker_product_attribute_drawing"/>
+        </record>
+        <record id="dynamaker_product_attribute_value_stepquantity" model="product.attribute.value">
+            <field name="name">stepQuantity</field>
+            <field name="is_custom">True</field>
+            <field name="attribute_id" ref="dynamaker_product_attribute_stepqty"/>
+        </record>
+        <record id="dynamaker_product_attribute_value_railingquantity" model="product.attribute.value">
+            <field name="name">railingQuantity</field>
+            <field name="attribute_id" ref="dynamaker_product_attribute_railingqty"/>
+            <field name="is_custom">True</field>
+        </record>
+
+<!--        product.template.attribute.line -->
+        <record id="dynamaker_product_template_attribute_line_drawing" model="product.template.attribute.line">
+            <field name="product_tmpl_id" ref="product_configurator_dynamaker.dynamaker_product_staircase"/>
+            <field name="attribute_id" ref="dynamaker_product_attribute_drawing"/>
+            <field name="value_ids" eval="[(6, 0, [ref('dynamaker_product_attribute_value_drawing')])]"/>
+        </record>
+        <record id="dynamaker_product_template_attribute_line_stepqty" model="product.template.attribute.line">
+            <field name="product_tmpl_id" ref="product_configurator_dynamaker.dynamaker_product_staircase"/>
+            <field name="attribute_id" ref="dynamaker_product_attribute_stepqty"/>
+            <field name="value_ids" eval="[(6, 0, [ref('dynamaker_product_attribute_value_stepquantity')])]"/>
+        </record>
+        <record id="dynamaker_product_template_attribute_line_railingqty" model="product.template.attribute.line">
+            <field name="product_tmpl_id" ref="product_configurator_dynamaker.dynamaker_product_staircase"/>
+            <field name="attribute_id" ref="dynamaker_product_attribute_railingqty"/>
+            <field name="value_ids" eval="[(6, 0, [ref('dynamaker_product_attribute_value_railingquantity')])]"/>
+        </record>
+
+<!--        product.product-->
+        <record id="dynamaker_product_product_step" model="product.product">
+            <field name="name">Step</field>
+            <field name="default_code">stepQuantity</field>
+        </record>
+        <record id="dynamaker_product_product_railing" model="product.product">
+            <field name="name">Railing</field>
+            <field name="default_code">railingQuantity</field>
+        </record>
+
+<!--        mrp.bom-->
+        <record id="dynamaker_mrp_bom" model="mrp.bom">
+            <field name="code">Staircase</field>
+            <field name="product_tmpl_id" ref="product_configurator_dynamaker.dynamaker_product_staircase"/>
+        </record>
+
+<!--        mrp.bom.line-->
+        <record id="dynamaker_mrp_bom_line_step" model="mrp.bom.line">
+            <field name="product_id" ref="dynamaker_product_product_step"/>
+            <field name="product_qty">1</field>
+        <field name="bom_id" ref="dynamaker_mrp_bom"/>
+        </record>
+        <record id="dynamaker_mrp_bom_line_railing" model="mrp.bom.line">
+            <field name="product_id" ref="dynamaker_product_product_railing"/>
+            <field name="product_qty">1</field>
+            <field name="bom_id" ref="dynamaker_mrp_bom"/>
+        </record>
+    </data>
+</odoo>

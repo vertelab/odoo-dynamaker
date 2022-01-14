@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data noupdate="0">
+        <!--    Staircase   -->
+        <record id="dynamaker_product_staircase" model="product.template">
+            <field name="name">Staircase Dynamaker</field>
+            <field name="dynamaker_product">True</field>
+            <field name="dynamaker_url">https://deployed.dynamaker.com/applications/test/XhSiSA3nqrA/</field>
+            <field name="python_code">price = kw['width'] + kw['height'] + kw['depth']</field>
+            <field name="image_1920" type="base64" file="product_configurator_dynamaker/static/img/staircase.png"/>
+            <field name="description">Configurable Staircase using Dynamaker</field>
+            <field name="is_published">True</field>
+            <field name="website_sequence">1</field>
+        </record>
+
+        <!--    Product Attribute-->
+        <record id="dynamaker_product_attribute_width" model="product.attribute">
+            <field name="name">Width</field>
+            <field name="create_variant">always</field>
+            <field name="display_type">hidden_text</field>
+        </record>
+        <record id="dynamaker_product_attribute_depth" model="product.attribute">
+            <field name="name">Depth</field>
+            <field name="create_variant">always</field>
+            <field name="display_type">hidden_text</field>
+        </record>
+        <record id="dynamaker_product_attribute_height" model="product.attribute">
+            <field name="name">Height</field>
+            <field name="create_variant">always</field>
+            <field name="display_type">hidden_text</field>
+        </record>
+
+        <!--    Product Attribute Value-->
+        <record id="dynamaker_product_attribute_value_width" model="product.attribute.value">
+            <field name="name">width</field>
+            <field name="is_custom">True</field>
+            <field name="attribute_id" ref="dynamaker_product_attribute_width"/>
+        </record>
+        <record id="dynamaker_product_attribute_value_depth" model="product.attribute.value">
+            <field name="name">depth</field>
+            <field name="is_custom">True</field>
+            <field name="attribute_id" ref="dynamaker_product_attribute_depth"/>
+        </record>
+        <record id="dynamaker_product_attribute_value_height" model="product.attribute.value">
+            <field name="name">height</field>
+            <field name="is_custom">True</field>
+            <field name="attribute_id" ref="dynamaker_product_attribute_height"/>
+        </record>
+
+        <!--    Product template attribute lines-->
+        <record id="dynamaker_product_template_attribute_line_width" model="product.template.attribute.line">
+            <field name="product_tmpl_id" ref="dynamaker_product_staircase"/>
+            <field name="attribute_id" ref="dynamaker_product_attribute_width"/>
+            <field name="value_ids" eval="[(6, 0, [ref('dynamaker_product_attribute_value_width')])]"/>
+        </record>
+        <record id="dynamaker_product_template_attribute_line_depth" model="product.template.attribute.line">
+            <field name="product_tmpl_id" ref="dynamaker_product_staircase"/>
+            <field name="attribute_id" ref="dynamaker_product_attribute_depth"/>
+            <field name="value_ids" eval="[(6, 0, [ref('dynamaker_product_attribute_value_depth')])]"/>
+        </record>
+        <record id="dynamaker_product_template_attribute_line_height" model="product.template.attribute.line">
+            <field name="product_tmpl_id" ref="dynamaker_product_staircase"/>
+            <field name="attribute_id" ref="dynamaker_product_attribute_height"/>
+            <field name="value_ids" eval="[(6, 0, [ref('dynamaker_product_attribute_value_height')])]"/>
+        </record>
+        <!--    Pricelist-->
+        <record id="dynamaker_product_pricelist" model="product.pricelist">
+            <field name="name">Dynamaker Pricelist</field>
+            <field name="active">True</field>
+            <field name="currency_id" ref="base.EUR"></field>
+            <field name="discount_policy">with_discount</field>
+            <field name="selectable">True</field>
+        </record>
+        <!--    Pricelist item-->
+        <record id="dynamaker_product_pricelist_item" model="product.pricelist.item">
+            <field name="product_tmpl_id" ref="dynamaker_product_staircase"/>
+            <field name="pricelist_id" ref="dynamaker_product_pricelist"/>
+            <field name="base">dynamaker_price</field>
+            <field name="compute_price">formula</field>
+            <field name="applied_on">1_product</field>
+        </record>
+    </data>
+</odoo>
