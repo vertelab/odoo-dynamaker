@@ -11,8 +11,10 @@ _logger = logging.getLogger(__name__)
 class DynamakerProductAttribute(models.Model):
     _inherit = "product.attribute"
 
+    # display_type = fields.Selection(selection_add=[
+    #     ('hidden_text', 'Hidden Text')])
     display_type = fields.Selection(selection_add=[
-        ('hidden_text', 'Hidden Text')])
+        ('hidden_text', 'Hidden Text')], ondelete = {'hidden_text': 'set default'})
 
 
 class Product(models.Model):
@@ -179,7 +181,7 @@ class PricelistItem(models.Model):
          'Sales Price: The base price will be the Sales Price.\n'
          'Cost Price : The base price will be the cost price.\n'
          'Other Pricelist : Computation of the base price based on another Pricelist.'
-         'Dynamaker pricelist : pricelist for custom products')
+         'Dynamaker pricelist : pricelist for custom products', ondelete = {'dynamaker_price': 'set default'})
 
 
 class ProductTemplate(models.Model):
