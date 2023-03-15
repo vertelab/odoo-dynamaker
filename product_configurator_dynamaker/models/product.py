@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 from odoo import api, fields, http, models, tools, _
+from odoo.exceptions import UserError
 from odoo.http import request
 from odoo.tools.safe_eval import safe_eval
 import ast
@@ -10,12 +11,9 @@ _logger = logging.getLogger(__name__)
 
 class DynamakerProductAttribute(models.Model):
     _inherit = "product.attribute"
-
-    # display_type = fields.Selection(selection_add=[
-    #     ('hidden_text', 'Hidden Text')])
+    
     display_type = fields.Selection(selection_add=[
         ('hidden_text', 'Hidden Text')], ondelete = {'hidden_text': 'set default'})
-
 
 class Product(models.Model):
     _inherit = 'product.template'
