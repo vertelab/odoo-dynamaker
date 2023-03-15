@@ -1,10 +1,10 @@
 # odoo-dynamaker
-Dynamaker plugin
+Dynamaker Plugin
 
-## how to setup dynamaker skateboard
-* If dynamaker is not installed: run odoogitclone odoo-dynamaker
+## How-to: Setup Dynamaker
+* If dynamaker is not installed: Run odoogitclone odoo-dynamaker / git clone (repo-url)
 
-* If dynamaker is not installed: go to debug mode -> update module list
+* If dynamaker is not installed: Go to debug mode -> update module list
 
 * GO TO Apps and install modules:
     * Install with demodata for demo product.
