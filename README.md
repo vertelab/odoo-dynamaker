@@ -1,5 +1,5 @@
 # odoo-dynamaker
-Dynamaker Plugin
+Dynamaker Plugin, Odoo 14
 
 ## How-to: Setup Dynamaker
 * If dynamaker is not installed: Run odoogitclone odoo-dynamaker / git clone (repo-url)
