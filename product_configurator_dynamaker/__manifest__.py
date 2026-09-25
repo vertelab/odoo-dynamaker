@@ -23,15 +23,19 @@
     'name': 'Dynamaker Webshop',
     'version': '18.0.1.2.0',
     # Version ledger: 18.0 = Odoo version. 1 = Major. Non regressionable code. 2 = Minor. New features that are regressionable. 3 = Bug fixes
-    'summary': 'Dynamaker: Parametric Product Customization',
+    'summary': 'Dynamaker: Parametric Product Customization.',
     'category': 'Production',
-    'description': """
-Dynamaker: Parametric Product Customization
-========================================================================
+    'description': '''
+Dynamaker Webshop
+=================
 
-Build and Publish Your Own Online Visual CAD Configurators that automatically can generate 3D-files, BOM-lists, 2D drawings and manufacturing data for every quotation and order.
+    Build and Publish Your Own Online Visual CAD Configurators that automatically can generate 3D-files, BOM-lists, 2D drawings and manufacturing data for every quotation and order.
 
-    """,
+    Features:
+
+        - UI Integration: Extends 2 view(s) in the Odoo interface.
+        - Extends Odoo: Builds on product.attribute, product.pricelist, product.pricelist.item, product.template.
+    ''',
     #'sequence': '1'
     'author': 'Vertel AB',
     'website': 'https://vertel.se/apps/odoo-dynamaker/product_configurator_dynamaker',
